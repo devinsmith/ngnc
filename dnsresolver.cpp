@@ -30,9 +30,9 @@ const static std::string DNS_HOST_IP_8  = "8.8.8.8";
 const static std::string DNS_HOST_IP_4  = "4.2.2.1";
 
 typedef struct tagDnsQuestionSection {
-	FXString host;
-	unsigned short query_type;
-	unsigned short query_class;
+  FXString host;
+  unsigned short query_type;
+  unsigned short query_class;
 } DnsQuestionSection;
 
 FXDEFMAP(DnsResolver) DnsResolverMap[] = {
@@ -59,7 +59,7 @@ FXString DnsResolver::GetDNS()
   res_init();
   printf("Number of DNS: %d\n", _res.nscount);
 
-  struct sockaddr_in dns = _res.nsaddr_list[0];
+  struct sockaddr_in dns = _res.nsaddr_list[1];
   char *addr = inet_ntoa(dns.sin_addr);
   printf("Addr: %s\n", addr);
   return addr;
@@ -244,48 +244,48 @@ FXString IPBin2Dec(const FXString& data) {
 }
 
 int ParseUnsignedInt(const char* buf, int pos, int end, unsigned int& value) {
-	value = 0;
-	value = (unsigned char)buf[pos++];
-	value = (value << 8)|(unsigned char)buf[pos++];
-	value = (value << 8)|(unsigned char)buf[pos++];
-	value = (value << 8)|(unsigned char)buf[pos++];
+  value = 0;
+  value = (unsigned char)buf[pos++];
+  value = (value << 8)|(unsigned char)buf[pos++];
+  value = (value << 8)|(unsigned char)buf[pos++];
+  value = (value << 8)|(unsigned char)buf[pos++];
 
-	return pos;
+  return pos;
 }
 
 int ParseUnsignedShort(const char* buf, int pos, int end, unsigned short& value) {
-	value = 0;
-	value = (unsigned char)buf[pos++];
-	value = (value << 8)|(unsigned char)buf[pos++];
-	return pos;
+  value = 0;
+  value = (unsigned char)buf[pos++];
+  value = (value << 8)|(unsigned char)buf[pos++];
+  return pos;
 }
 
 int ParseHost(const char* buf, int pos, int end, FXString& host) {
-	if (buf == NULL) {
-		return pos;
-	}
-	unsigned int limit = 0xc0;
-	unsigned int len = (unsigned char)buf[pos++];
-	while (len != 0 && !(len & limit)) {
-		host.append(buf+pos, len);
-		pos += len;
-		len = (unsigned char)buf[pos++];
-		if (len != 0) {
-			host.append(".");
-		}
-	}
-	if (len & limit) {
-		unsigned int offset = ((limit ^ len) << 8) | (unsigned char)buf[pos++];
-		ParseHost(buf, offset, end, host);
-	}	
-	return pos;
+  if (buf == NULL) {
+    return pos;
+  }
+  unsigned int limit = 0xc0;
+  unsigned int len = (unsigned char)buf[pos++];
+  while (len != 0 && !(len & limit)) {
+    host.append(buf+pos, len);
+    pos += len;
+    len = (unsigned char)buf[pos++];
+    if (len != 0) {
+      host.append(".");
+    }
+  }
+  if (len & limit) {
+    unsigned int offset = ((limit ^ len) << 8) | (unsigned char)buf[pos++];
+    ParseHost(buf, offset, end, host);
+  }	
+  return pos;
 }
 
 int ParseQuestionSection(const char* buf, int pos, int end, DnsQuestionSection& dns_question_section) {
-	pos = ParseHost(buf, pos, end, dns_question_section.host);
-	pos = ParseUnsignedShort(buf, pos, end, dns_question_section.query_type);
-	pos = ParseUnsignedShort(buf, pos, end, dns_question_section.query_class);
-	return pos; 
+  pos = ParseHost(buf, pos, end, dns_question_section.host);
+  pos = ParseUnsignedShort(buf, pos, end, dns_question_section.query_type);
+  pos = ParseUnsignedShort(buf, pos, end, dns_question_section.query_class);
+  return pos;
 }
 
 int ParseResourceRecord(const char* buf, int pos, int end,
@@ -326,49 +326,49 @@ std::vector<DnsResource> DnsResolver::ParseDnsResponsePacket(const char* buf,
   if (buf == NULL) {
     return answers;
   }
-	int pos = 0;
-	// query transaction id
-	unsigned short query_id = 0;
-	query_id = buf[pos++];
-	query_id = (query_id << 8) | buf[pos++];
-	
-//	bool req_recursive = false;
-	unsigned short opcode_info = 0;
-	// |qr| opcode |aa|tc|rd|rd|
-	pos = ParseUnsignedShort(buf, pos, end, opcode_info);
+  int pos = 0;
+  // query transaction id
+  unsigned short query_id = 0;
+  query_id = buf[pos++];
+  query_id = (query_id << 8) | buf[pos++];
+
+  //	bool req_recursive = false;
+  unsigned short opcode_info = 0;
+  // |qr| opcode |aa|tc|rd|rd|
+  pos = ParseUnsignedShort(buf, pos, end, opcode_info);
   if (opcode_info & 0x0f) {
     printf("dns ret code non-zero, ret = %d\n", opcode_info & 0x0f);
     return answers;
   }
 
-	if (opcode_info&0x80) {
-		printf("recursived response.\n");
-	} else {
-		printf("non-recursived response.\n");
-	}
-	unsigned short query_cnt = 0;
-	pos = ParseUnsignedShort(buf, pos, end, query_cnt);
+  if (opcode_info&0x80) {
+    printf("recursived response.\n");
+  } else {
+    printf("non-recursived response.\n");
+  }
+  unsigned short query_cnt = 0;
+  pos = ParseUnsignedShort(buf, pos, end, query_cnt);
 
-	printf ("response query_cnt = %d\n", query_cnt);
+  printf ("response query_cnt = %d\n", query_cnt);
 
-	unsigned short answer_cnt = 0;
-	pos = ParseUnsignedShort(buf, pos, end, answer_cnt);
-	printf("response answer_cnt = %d\n", answer_cnt);
+  unsigned short answer_cnt = 0;
+  pos = ParseUnsignedShort(buf, pos, end, answer_cnt);
+  printf("response answer_cnt = %d\n", answer_cnt);
 
-	unsigned short authority_cnt = 0;
-	pos = ParseUnsignedShort(buf, pos, end, authority_cnt);
-	printf("response authority_cnt = %d\n", authority_cnt);
+  unsigned short authority_cnt = 0;
+  pos = ParseUnsignedShort(buf, pos, end, authority_cnt);
+  printf("response authority_cnt = %d\n", authority_cnt);
 
-	unsigned short additional_cnt = 0;
-	pos = ParseUnsignedShort(buf, pos, end, additional_cnt);
-	printf("response addtional_cnt = %d\n", additional_cnt);
+  unsigned short additional_cnt = 0;
+  pos = ParseUnsignedShort(buf, pos, end, additional_cnt);
+  printf("response addtional_cnt = %d\n", additional_cnt);
 
-	//============query section=================
-	for (int i = 0; i < query_cnt; i++) {
-		DnsQuestionSection dns_question;
-		pos = ParseQuestionSection(buf, pos, end, dns_question);
-		printf("question section: host = %s, type = %2d, class = %2d\n", dns_question.host.text(), dns_question.query_type, dns_question.query_class);
-	}
+  //============query section=================
+  for (int i = 0; i < query_cnt; i++) {
+    DnsQuestionSection dns_question;
+    pos = ParseQuestionSection(buf, pos, end, dns_question);
+    printf("question section: host = %s, type = %2d, class = %2d\n", dns_question.host.text(), dns_question.query_type, dns_question.query_class);
+  }
 
   //===========answer section=================
   printf("[  answer section   ]\n");
@@ -381,24 +381,24 @@ std::vector<DnsResource> DnsResolver::ParseDnsResponsePacket(const char* buf,
     answers.push_back(res);
   }
 
-	//==========authority section==============
-	printf("[  authority section   ]\n");
-	for (int i = 0; i < authority_cnt; i++) {
-		DnsResource res;
-		pos = ParseResourceRecord(buf, pos, end, res);
-		ParseDnsRecordDataField(buf, pos, end, res);
-		printf("host = %s, type = %2d, class = %2d, ttl = %4u, dlen = %2d, data = %s\n",
-		res.host.text(), res.domain_type, res.domain_class, res.ttl, res.data_len, res.data.text());
-	}
+  //==========authority section==============
+  printf("[  authority section   ]\n");
+  for (int i = 0; i < authority_cnt; i++) {
+    DnsResource res;
+    pos = ParseResourceRecord(buf, pos, end, res);
+    ParseDnsRecordDataField(buf, pos, end, res);
+    printf("host = %s, type = %2d, class = %2d, ttl = %4u, dlen = %2d, data = %s\n",
+    res.host.text(), res.domain_type, res.domain_class, res.ttl, res.data_len, res.data.text());
+  }
 
-	//==========additional section=============
-	printf("[  additional section   ]\n");
-	for (int i = 0; i < additional_cnt; i++) {
-		DnsResource res;
-		pos = ParseResourceRecord(buf, pos, end, res);
-		ParseDnsRecordDataField(buf, pos, end, res);
-		printf("host = %s, type = %2d, class = %2d, ttl = %4u, dlen = %2d, data = %s\n",
-		res.host.text(), res.domain_type, res.domain_class, res.ttl, res.data_len, res.data.text());
-	}
-	return answers;
+  //==========additional section=============
+  printf("[  additional section   ]\n");
+  for (int i = 0; i < additional_cnt; i++) {
+    DnsResource res;
+    pos = ParseResourceRecord(buf, pos, end, res);
+    ParseDnsRecordDataField(buf, pos, end, res);
+    printf("host = %s, type = %2d, class = %2d, ttl = %4u, dlen = %2d, data = %s\n",
+    res.host.text(), res.domain_type, res.domain_class, res.ttl, res.data_len, res.data.text());
+  }
+  return answers;
 }
