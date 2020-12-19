@@ -25,6 +25,7 @@
 FXDEFMAP(ngnc) ngncMap[] = {
   FXMAPFUNC(SEL_COMMAND, ngnc::ID_ABOUT, ngnc::OnCommandAbout),
   FXMAPFUNC(SEL_COMMAND, ngnc::ID_CONNECT, ngnc::OnCommandConnect),
+  FXMAPFUNC(SEL_COMMAND, ngnc::ID_DISCONNECT, ngnc::OnCommandDisconnect),
   FXMAPFUNC(SEL_COMMAND, ngnc::ID_PREFERENCES, ngnc::OnCommandPreferences),
   FXMAPFUNC(SEL_COMMAND, ngnc::ID_QUIT, ngnc::OnCommandQuit)
 };
@@ -147,6 +148,16 @@ long ngnc::OnCommandConnect(FXObject*, FXSelector, void*)
     m_connect->disable();
     m_disconnect->enable();
   }
+  return 1;
+}
+
+long ngnc::OnCommandDisconnect(FXObject*, FXSelector, void*)
+{
+  if (server->GetConnected()) {
+    server->Disconnect(true);
+  }
+  m_connect->enable();
+  m_disconnect->disable();
   return 1;
 }
 

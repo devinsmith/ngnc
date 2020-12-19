@@ -311,11 +311,14 @@ long NakenClient::ReadData()
   return size;
 }
 
-void NakenClient::Disconnect()
+void NakenClient::Disconnect(bool user_initiated)
 {
-  // Send .q
-  SendEvent(CHAT_DISCONNECT, FXStringFormat("Server %s was disconnected\n",
-      serverName.text()));
+  if (user_initiated) {
+    SendEvent(CHAT_DISCONNECT, "You have disconnected\n");
+  } else {
+    SendEvent(CHAT_DISCONNECT, FXStringFormat("Server %s was disconnected\n",
+        serverName.text()));
+  }
 #ifdef WIN32
   shutdown(sock, SD_BOTH);
   closesocket(sock);

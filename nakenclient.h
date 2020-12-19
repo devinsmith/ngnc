@@ -55,7 +55,7 @@ public:
   };
 
   FXint Connect();
-  void Disconnect();
+  void Disconnect(bool user_initiated = false);
   void SetServerName(const FXString &name) { serverName = name; }
   FXString GetServerName() { return serverName; }
   void SetServerPort(FXint port) { serverPort = port; }
