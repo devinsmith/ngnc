@@ -45,6 +45,7 @@ ConfigDialog::ConfigDialog(FXMainWindow *owner, ChatColor clrs) :
   getApp()->getNormalFont()->create();
   FXFontDesc fontdescription;
   getApp()->getNormalFont()->getFontDesc(fontdescription);
+  FXString defaultFont = getApp()->getNormalFont()->getFont();
   font = new FXFont(getApp(),fontdescription);
   font->create();
 
@@ -83,8 +84,11 @@ ConfigDialog::ConfigDialog(FXMainWindow *owner, ChatColor clrs) :
   FXVerticalFrame *lookpane = new FXVerticalFrame(switcher, LAYOUT_FILL_X|LAYOUT_FILL_Y);
   new FXLabel(lookpane, "Look and feel", NULL, LAYOUT_LEFT);
   new FXHorizontalSeparator(lookpane, SEPARATOR_LINE|LAYOUT_FILL_X);
+
   FXHorizontalFrame *fontframe = new FXHorizontalFrame(lookpane, LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING);
-  new FXLabel(fontframe, "Font");
+  new FXLabel(fontframe, "Font:", NULL, LAYOUT_CENTER_Y);
+  fontbutton = new FXButton(fontframe, "", NULL, this, ID_CHOOSE_FONT, LAYOUT_CENTER_Y | FRAME_RAISED | JUSTIFY_CENTER_X | JUSTIFY_CENTER_Y | LAYOUT_FILL_X);
+  fontbutton->setText(defaultFont);
 
 
   new FXButton(buttonframe, "Co&lors", NULL, switcher, FXSwitcher::ID_OPEN_FIRST, FRAME_RAISED);

@@ -27,7 +27,8 @@ public:
   enum {
     ID_ACCEPT = FXTopWindow::ID_LAST,
     ID_CANCEL,
-    ID_CHATCOLORS
+    ID_CHATCOLORS,
+    ID_CHOOSE_FONT
   };
 
   long OnAccept(FXObject*,FXSelector,void*);
@@ -44,6 +45,7 @@ private:
   FXText *text;
   FXDataTarget textTarget, backTarget, errorTarget;
   FXFont *font;
+  FXButton *fontbutton;
 };
 
 #endif /* NGNC_PREFS_H */
