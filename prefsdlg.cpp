@@ -16,7 +16,7 @@
 
 #include <fxkeys.h>
 
-#include "prefs.h"
+#include "prefsdlg.h"
 
 FXDEFMAP(ConfigDialog) ConfigDialogMap[] = {
   FXMAPFUNC(SEL_COMMAND, ConfigDialog::ID_ACCEPT, ConfigDialog::OnAccept),
