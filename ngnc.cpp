@@ -20,7 +20,7 @@
 #include "connectdlg.h"
 #include "icons.h"
 #include "ngnc.h"
-#include "prefs.h"
+#include "prefsdlg.h"
 
 FXDEFMAP(ngnc) ngncMap[] = {
   FXMAPFUNC(SEL_COMMAND, ngnc::ID_ABOUT, ngnc::OnCommandAbout),

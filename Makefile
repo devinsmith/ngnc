@@ -3,7 +3,7 @@
 .PHONY: all clean
 
 SRCS = chattabitem.cpp connectdlg.cpp dnsresolver.cpp main.cpp nakenclient.cpp \
-			 ngnc.cpp prefs.cpp icons.cpp
+			 ngnc.cpp prefsdlg.cpp icons.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
