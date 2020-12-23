@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Devin Smith <devin@devinsmith.net>
+ * Copyright (c) 2020 Devin Smith <devin@devinsmith.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,36 +14,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef NGNC_PREFSDLG_H
-#define NGNC_PREFSDLG_H
-
 #include "prefs.h"
 
-class ConfigDialog : public FXDialogBox {
-  FXDECLARE(ConfigDialog);
-public:
-  ConfigDialog(FXMainWindow *owner);
-  virtual ~ConfigDialog();
-  enum {
-    ID_ACCEPT = FXTopWindow::ID_LAST,
-    ID_CANCEL,
-    ID_CHATCOLORS,
-    ID_CHOOSE_FONT
-  };
+void Preferences::WriteRegistry(FXRegistry& reg)
+{
+  reg.writeColorEntry("SETTINGS", "textColor", colors.text);
+  reg.writeColorEntry("SETTINGS", "backColor", colors.background);
+  reg.writeColorEntry("SETTINGS", "errorColor", colors.error);
+}
 
-  long OnAccept(FXObject*,FXSelector,void*);
-  long OnCancel(FXObject*,FXSelector,void*);
-  long OnColor(FXObject*,FXSelector,void*);
-private:
-  ConfigDialog() {}
-  void WriteRegistry();
-
-  FXHiliteStyle textStyle[2];
-  FXText *text;
-  FXDataTarget textTarget, backTarget, errorTarget;
-  FXFont *font;
-  FXButton *fontbutton;
-};
-
-#endif /* NGNC_PREFSDLG_H */
+void Preferences::ReadRegistry(FXRegistry& reg)
+{
+  colors.text = reg.readColorEntry("SETTINGS", "textColor", FXRGB(0,0,0));
+  colors.background = reg.readColorEntry("SETTINGS", "backColor", FXRGB(255,255,255));
+  colors.error = reg.readColorEntry("SETTINGS", "errorColor", FXRGB(255,0,0));
+}
 

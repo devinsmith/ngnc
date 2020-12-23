@@ -14,36 +14,35 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef NGNC_PREFSDLG_H
-#define NGNC_PREFSDLG_H
+#ifndef NGNC_PREFS_H
+#define NGNC_PREFS_H
 
-#include "prefs.h"
+#include <fx.h>
 
-class ConfigDialog : public FXDialogBox {
-  FXDECLARE(ConfigDialog);
-public:
-  ConfigDialog(FXMainWindow *owner);
-  virtual ~ConfigDialog();
-  enum {
-    ID_ACCEPT = FXTopWindow::ID_LAST,
-    ID_CANCEL,
-    ID_CHATCOLORS,
-    ID_CHOOSE_FONT
-  };
-
-  long OnAccept(FXObject*,FXSelector,void*);
-  long OnCancel(FXObject*,FXSelector,void*);
-  long OnColor(FXObject*,FXSelector,void*);
-private:
-  ConfigDialog() {}
-  void WriteRegistry();
-
-  FXHiliteStyle textStyle[2];
-  FXText *text;
-  FXDataTarget textTarget, backTarget, errorTarget;
-  FXFont *font;
-  FXButton *fontbutton;
+struct ChatColor {
+  FXColor text;
+  FXColor background;
+  FXColor error;
 };
 
-#endif /* NGNC_PREFSDLG_H */
+class Preferences {
+public:
+  static Preferences& instance()
+  {
+    static Preferences inst;
+
+    return inst;
+  }
+
+  ChatColor colors;
+
+  void WriteRegistry(FXRegistry& reg);
+  void ReadRegistry(FXRegistry& reg);
+private:
+  Preferences() {}
+  Preferences(Preferences const&);
+  void operator=(Preferences const&);
+};
+
+#endif /* NGNC_PREFS_H */
 

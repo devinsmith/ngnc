@@ -41,12 +41,6 @@ struct ChatEvent {
   FXString param1, param2, param3, param4;
 };
 
-struct ChatColor {
-  FXColor text;
-  FXColor background;
-  FXColor error;
-};
-
 enum ChatColorType {
   COLOR_NORMAL = 1,
   COLOR_ERROR = 2

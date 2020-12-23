@@ -53,13 +53,14 @@ DnsResolver::~DnsResolver()
 FXString DnsResolver::GetDNS()
 {
 #ifdef WIN32
+  // XXX: Figure out how to get Windows DNS servers.
   return "8.8.8.8";
 #else
 
   res_init();
   printf("Number of DNS: %d\n", _res.nscount);
 
-  struct sockaddr_in dns = _res.nsaddr_list[1];
+  struct sockaddr_in dns = _res.nsaddr_list[0];
   char *addr = inet_ntoa(dns.sin_addr);
   printf("Addr: %s\n", addr);
   return addr;

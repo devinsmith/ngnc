@@ -16,6 +16,7 @@
 
 #include <fxkeys.h>
 
+#include "defs.h"
 #include "prefsdlg.h"
 
 FXDEFMAP(ConfigDialog) ConfigDialogMap[] = {
@@ -27,11 +28,12 @@ FXDEFMAP(ConfigDialog) ConfigDialogMap[] = {
 
 FXIMPLEMENT(ConfigDialog, FXDialogBox, ConfigDialogMap, ARRAYNUMBER(ConfigDialogMap))
 
-ConfigDialog::ConfigDialog(FXMainWindow *owner, ChatColor clrs) :
+ConfigDialog::ConfigDialog(FXMainWindow *owner) :
   FXDialogBox(owner, "Preferences", DECOR_RESIZE | DECOR_TITLE | DECOR_BORDER,
-    0,0,0,0, 0,0,0,0, 0,0), colors(clrs)
+    0,0,0,0, 0,0,0,0, 0,0)
 {
   // Setup some data targets / bindings.
+  ChatColor& colors = Preferences::instance().colors;
   textTarget.connect(colors.text);
   textTarget.setTarget(this);
   textTarget.setSelector(ID_CHATCOLORS);
@@ -124,7 +126,7 @@ ConfigDialog::~ConfigDialog()
 
 long ConfigDialog::OnAccept(FXObject* obj, FXSelector sel, void* ud)
 {
-  WriteRegistry();
+  Preferences::instance().WriteRegistry(getApp()->reg());
   getApp()->stopModal(this, TRUE);
   hide();
   return 1;
@@ -139,6 +141,8 @@ long ConfigDialog::OnCancel(FXObject* obj, FXSelector sel, void* ud)
 
 long ConfigDialog::OnColor(FXObject* obj, FXSelector sel, void* ud)
 {
+  ChatColor& colors = Preferences::instance().colors;
+
   text->setTextColor(colors.text);
   text->setBackColor(colors.background);
   for (int i = 0; i < 2; i++) {
@@ -147,9 +151,5 @@ long ConfigDialog::OnColor(FXObject* obj, FXSelector sel, void* ud)
   textStyle[1].normalForeColor = colors.error;
   text->update();
   return 1;
-}
-
-void ConfigDialog::WriteRegistry()
-{
 }
 

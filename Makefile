@@ -3,7 +3,7 @@
 .PHONY: all clean
 
 SRCS = chattabitem.cpp connectdlg.cpp dnsresolver.cpp main.cpp nakenclient.cpp \
-			 ngnc.cpp prefsdlg.cpp icons.cpp
+			 ngnc.cpp prefsdlg.cpp prefs.cpp icons.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
@@ -26,6 +26,12 @@ $(EXE): $(OBJS)
 
 .cpp.o:
 	$(CXX) $(CFLAGS) $(DEP_INCLUDES) -MMD -MP -MT $@ -o $@ -c $<
+
+# reswrap isn't distributed with some distros
+#icons.h: data/spy.ico
+#	reswrap -o icons.h -i -z -r spy_ico data/spy.ico
+#icons.o: icons.h
+#	reswrap -o icons.cpp -z -e -r spy_ico data/spy.ico
 
 clean:
 	rm -f $(OBJS) $(EXE) $(DEPS)

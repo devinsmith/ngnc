@@ -18,6 +18,7 @@
 #define NGNC_H
 
 #include "defs.h"
+#include "prefs.h"
 
 /* NextGen Naken Client (ngnc) */
 
@@ -44,7 +45,6 @@ public:
   long OnCommandQuit(FXObject*, FXSelector, void*);
 private:
   ngnc() {}
-  void ReadConfig();
   void SaveConfig();
   void SortTabs();
 
@@ -54,8 +54,6 @@ private:
   FXMenuCommand *m_disconnect;
 
   NakenClient *server;
-
-  ChatColor colors;
 };
 
 #endif /* NGNC_H */

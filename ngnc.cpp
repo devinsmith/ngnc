@@ -41,7 +41,7 @@ ngnc::ngnc(FXApp *app) :
   setIcon(ICO_BIG);
   setMiniIcon(ICO_SM);
 
-  ReadConfig();
+  Preferences::instance().ReadRegistry(app->reg());
 
   FXMenuBar *mb = new FXMenuBar(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X);
 
@@ -75,8 +75,10 @@ ngnc::ngnc(FXApp *app) :
   tabbook->setPackingHints(packing);
 
   server = new NakenClient(app, this, 0);
+  ChatColor& colors = Preferences::instance().colors;
   ChatTabItem *tabitem = new ChatTabItem(tabbook, "(server)", TAB_BOTTOM,
-      SERVER, server, colors.text, colors.background, colors.error);
+      SERVER, server, colors.text, colors.background,
+      colors.error);
   server->AppendTarget(tabitem);
 }
 
@@ -98,18 +100,7 @@ ngnc::create()
 void ngnc::SaveConfig()
 {
   FXRegistry& reg = getApp()->reg();
-  reg.writeColorEntry("SETTINGS", "textColor", colors.text);
-  reg.writeColorEntry("SETTINGS", "backColor", colors.background);
-  reg.writeColorEntry("SETTINGS", "errorColor", colors.error);
-}
-
-void ngnc::ReadConfig()
-{
-  FXRegistry& reg = getApp()->reg();
-
-  colors.text = reg.readColorEntry("SETTINGS", "textColor", FXRGB(0,0,0));
-  colors.background = reg.readColorEntry("SETTINGS", "backColor", FXRGB(255,255,255));
-  colors.error = reg.readColorEntry("SETTINGS", "errorColor", FXRGB(255,0,0));
+  Preferences::instance().WriteRegistry(reg);
 }
 
 long ngnc::OnCommandAbout(FXObject*, FXSelector, void*)
@@ -170,10 +161,10 @@ long ngnc::OnCommandQuit(FXObject*, FXSelector, void*)
 
 long ngnc::OnCommandPreferences(FXObject *, FXSelector, void*)
 {
-  ConfigDialog dlg(this, colors);
+  ConfigDialog dlg(this);
   if (dlg.execute(PLACEMENT_OWNER)) {
     // User clicked save.
-    colors = dlg.GetColors();
+    ChatColor& colors = Preferences::instance().colors;
 
     for (FXint i = 0; i < tabbook->numChildren(); i = i + 2) {
       ((ChatTabItem *)tabbook->childAtIndex(i))->SetColor(colors.text,
