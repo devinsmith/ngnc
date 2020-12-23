@@ -70,6 +70,7 @@ ChatTabItem::ChatTabItem(FXTabBook *tab, const FXString& tabtext,
   text->setTextColor(textColor);
   commandline->setBackColor(textBackColor);
   commandline->setTextColor(textColor);
+  commandline->setCursorColor(textColor);
 }
 
 ChatTabItem::~ChatTabItem()
