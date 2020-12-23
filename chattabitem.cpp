@@ -34,10 +34,8 @@ FXIMPLEMENT(ChatTabItem, FXTabItem, ChatTabItemMap, ARRAYNUMBER(ChatTabItemMap))
 
 ChatTabItem::ChatTabItem(FXTabBook *tab, const FXString& tabtext,
     FXuint opts = TAB_TOP_NORMAL, TABTYPE typ = CHANNEL,
-    NakenClient *sock = NULL, FXColor tclr = FXRGB(0, 0, 0),
-    FXColor tbclr = FXRGB(255, 255, 255)) :
-  FXTabItem(tab, tabtext, NULL, opts), parent(tab), server(sock), type(typ),
-  textColor(tclr), textBackColor(tbclr)
+    NakenClient *sock = NULL) :
+  FXTabItem(tab, tabtext, NULL, opts), parent(tab), server(sock), type(typ), chatfont(nullptr)
 {
   numberUsers = 0;
 
@@ -65,30 +63,51 @@ ChatTabItem::ChatTabItem(FXTabBook *tab, const FXString& tabtext,
       TEXTFIELD_ENTER_ONLY | FRAME_SUNKEN | JUSTIFY_LEFT | LAYOUT_FILL_X |
       LAYOUT_BOTTOM, 0, 0, 0, 0, 1, 1, 1, 1);
 
-  text->setBackColor(textBackColor);
-  text->setActiveBackColor(textBackColor);
-  text->setTextColor(textColor);
-  commandline->setBackColor(textBackColor);
-  commandline->setTextColor(textColor);
-  commandline->setCursorColor(textColor);
+  ChatColor& colors = Preferences::instance().colors;
+  FXString fontDesc = Preferences::instance().chatFontspec;
+
+  text->setBackColor(colors.background);
+  text->setActiveBackColor(colors.background);
+  text->setTextColor(colors.text);
+
+  commandline->setBackColor(colors.background);
+  commandline->setTextColor(colors.text);
+  commandline->setCursorColor(colors.text);
+
+  if (!fontDesc.empty()) {
+    chatfont = new FXFont(getApp(), fontDesc);
+    chatfont->create();
+    text->setFont(chatfont);
+    commandline->setFont(chatfont);
+  }
 }
 
 ChatTabItem::~ChatTabItem()
 {
+  if (chatfont)
+    delete chatfont;
 }
 
-void ChatTabItem::SetColorFromPrefs()
+void ChatTabItem::UpdateFromPrefs()
 {
   const ChatColor& colors = Preferences::instance().colors;
+  FXString fontDesc = Preferences::instance().chatFontspec;
 
   SetTextColor(colors.text);
   SetTextBackColor(colors.background);
+
+  if (!fontDesc.empty()) {
+    FXFont *oldfont = chatfont;
+    chatfont = new FXFont(getApp(), fontDesc);
+    chatfont->create();
+    text->setFont(chatfont);
+    commandline->setFont(chatfont);
+    delete oldfont;
+  }
 }
 
 void ChatTabItem::SetTextBackColor(FXColor clr)
 {
-  textBackColor = clr;
-
   text->setBackColor(clr);
   text->setActiveBackColor(clr);
   commandline->setBackColor(clr);

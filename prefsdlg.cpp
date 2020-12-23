@@ -45,12 +45,19 @@ ConfigDialog::ConfigDialog(FXMainWindow *owner) :
   errorTarget.setTarget(this);
   errorTarget.setSelector(ID_CHATCOLORS);
 
-  getApp()->getNormalFont()->create();
-  FXFontDesc fontdescription;
-  getApp()->getNormalFont()->getFontDesc(fontdescription);
-  FXString defaultFont = getApp()->getNormalFont()->getFont();
-  chatfont = new FXFont(getApp(),fontdescription);
+  FXString fontDesc = Preferences::instance().chatFontspec;
+
+  if (!fontDesc.empty()) {
+    chatfont = new FXFont(getApp(), fontDesc);
+  } else {
+    getApp()->getNormalFont()->create();
+
+    FXFontDesc fontdescription;
+    getApp()->getNormalFont()->getFontDesc(fontdescription);
+    chatfont = new FXFont(getApp(), fontdescription);
+  }
   chatfont->create();
+  FXString defaultFont = chatfont->getFont();
 
   // Build UI.
   FXHorizontalFrame *closeframe = new FXHorizontalFrame(this, LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X);
@@ -170,8 +177,11 @@ long ConfigDialog::OnChooseFont(FXObject* obj, FXSelector sel, void *ud)
     chatfont->create();
     delete oldfont;
 
+    FXString newDesc = chatfont->getFont();
+    fontbutton->setText(newDesc);
+
     // Save to preferences
-    Preferences::instance().chatFontspec = chatfont->getFont();
+    Preferences::instance().chatFontspec = newDesc;
   }
   return 1;
 }

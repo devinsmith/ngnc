@@ -76,9 +76,8 @@ ngnc::ngnc(FXApp *app) :
   tabbook->setPackingHints(packing);
 
   server = new NakenClient(app, this, 0);
-  ChatColor& colors = Preferences::instance().colors;
   ChatTabItem *tabitem = new ChatTabItem(tabbook, "(server)", TAB_BOTTOM,
-      SERVER, server, colors.text, colors.background);
+      SERVER, server);
   server->AppendTarget(tabitem);
 }
 
@@ -162,9 +161,8 @@ long ngnc::OnCommandPreferences(FXObject *, FXSelector, void*)
   ConfigDialog dlg(this);
   if (dlg.execute(PLACEMENT_OWNER)) {
     // User clicked save, apply preferences to chat tab items.
-
     for (FXint i = 0; i < tabbook->numChildren(); i = i + 2) {
-      ((ChatTabItem *)tabbook->childAtIndex(i))->SetColorFromPrefs();
+      ((ChatTabItem *)tabbook->childAtIndex(i))->UpdateFromPrefs();
     }
   }
   return 1;
