@@ -23,7 +23,8 @@ FXDEFMAP(ConfigDialog) ConfigDialogMap[] = {
   FXMAPFUNC(SEL_COMMAND, ConfigDialog::ID_ACCEPT, ConfigDialog::OnAccept),
   FXMAPFUNC(SEL_COMMAND, ConfigDialog::ID_CANCEL, ConfigDialog::OnCancel),
   FXMAPFUNC(SEL_COMMAND, ConfigDialog::ID_CHATCOLORS, ConfigDialog::OnColor),
-  FXMAPFUNC(SEL_CHANGED, ConfigDialog::ID_CHATCOLORS, ConfigDialog::OnColor)
+  FXMAPFUNC(SEL_CHANGED, ConfigDialog::ID_CHATCOLORS, ConfigDialog::OnColor),
+  FXMAPFUNC(SEL_COMMAND, ConfigDialog::ID_CHOOSE_FONT, ConfigDialog::OnChooseFont)
 };
 
 FXIMPLEMENT(ConfigDialog, FXDialogBox, ConfigDialogMap, ARRAYNUMBER(ConfigDialogMap))
@@ -48,8 +49,8 @@ ConfigDialog::ConfigDialog(FXMainWindow *owner) :
   FXFontDesc fontdescription;
   getApp()->getNormalFont()->getFontDesc(fontdescription);
   FXString defaultFont = getApp()->getNormalFont()->getFont();
-  font = new FXFont(getApp(),fontdescription);
-  font->create();
+  chatfont = new FXFont(getApp(),fontdescription);
+  chatfont->create();
 
   // Build UI.
   FXHorizontalFrame *closeframe = new FXHorizontalFrame(this, LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X);
@@ -88,7 +89,7 @@ ConfigDialog::ConfigDialog(FXMainWindow *owner) :
   new FXHorizontalSeparator(lookpane, SEPARATOR_LINE|LAYOUT_FILL_X);
 
   FXHorizontalFrame *fontframe = new FXHorizontalFrame(lookpane, LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING);
-  new FXLabel(fontframe, "Font:", NULL, LAYOUT_CENTER_Y);
+  new FXLabel(fontframe, "Chat Font:", NULL, LAYOUT_CENTER_Y);
   fontbutton = new FXButton(fontframe, "", NULL, this, ID_CHOOSE_FONT, LAYOUT_CENTER_Y | FRAME_RAISED | JUSTIFY_CENTER_X | JUSTIFY_CENTER_Y | LAYOUT_FILL_X);
   fontbutton->setText(defaultFont);
 
@@ -121,7 +122,7 @@ ConfigDialog::ConfigDialog(FXMainWindow *owner) :
 
 ConfigDialog::~ConfigDialog()
 {
-  delete font;
+  delete chatfont;
 }
 
 long ConfigDialog::OnAccept(FXObject* obj, FXSelector sel, void* ud)
@@ -153,3 +154,24 @@ long ConfigDialog::OnColor(FXObject* obj, FXSelector sel, void* ud)
   return 1;
 }
 
+long ConfigDialog::OnChooseFont(FXObject* obj, FXSelector sel, void *ud)
+{
+  FXFontDialog dialog(this, "Select Chat Font");
+  FXFontDesc fontdescription;
+  chatfont->getFontDesc(fontdescription);
+  strncpy(fontdescription.face, chatfont->getActualName().text(),
+      sizeof(fontdescription.face));
+  dialog.setFontSelection(fontdescription);
+  if (dialog.execute(PLACEMENT_SCREEN)) {
+    FXFont *oldfont = chatfont;
+
+    dialog.getFontSelection(fontdescription);
+    chatfont = new FXFont(getApp(), fontdescription);
+    chatfont->create();
+    delete oldfont;
+
+    // Save to preferences
+    Preferences::instance().chatFontspec = chatfont->getFont();
+  }
+  return 1;
+}

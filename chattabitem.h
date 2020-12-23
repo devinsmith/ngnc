@@ -24,7 +24,7 @@ class ChatTabItem : public FXTabItem {
   FXDECLARE(ChatTabItem);
 public:
   ChatTabItem(FXTabBook *tab, const FXString& tabtext, FXuint opts, TABTYPE typ,
-      NakenClient *sock, FXColor tclr, FXColor tbclr, FXColor errclr);
+      NakenClient *sock, FXColor tclr, FXColor tbclr);
   virtual ~ChatTabItem();
   enum {
     ID_COMMANDLINE = FXTabItem::ID_LAST,
@@ -38,9 +38,7 @@ public:
   void ReparentTab();
   void MakeLastRowVisible(FXbool);
 
-  void SetColor(FXColor tclr, FXColor tbclr);
-  void SetTextBackColor(FXColor clr);
-  void SetTextColor(FXColor clr);
+  void SetColorFromPrefs();
 
   FXbool IsCurrent();
   FXbool IsNoCurrent();
@@ -52,6 +50,8 @@ private:
   ChatTabItem() {}
   void AppendChatText(FXString);
   void AppendChatStyledText(FXString, FXint);
+  void SetTextBackColor(FXColor clr);
+  void SetTextColor(FXColor clr);
 
   FXTabBook *parent;
   NakenClient *server;
@@ -63,7 +63,7 @@ private:
   FXList *users;
   FXTextField *commandline;
   FXint numberUsers;
-  FXColor textColor, textBackColor, textErrorColor;
+  FXColor textColor, textBackColor;
 };
 
 #endif /* NGNC_TABITEM_H */

@@ -34,12 +34,13 @@ public:
     return inst;
   }
 
+  FXString chatFontspec;
   ChatColor colors;
 
   void WriteRegistry(FXRegistry& reg);
   void ReadRegistry(FXRegistry& reg);
 private:
-  Preferences() {}
+  Preferences();
   Preferences(Preferences const&);
   void operator=(Preferences const&);
 };

@@ -16,17 +16,28 @@
 
 #include "prefs.h"
 
+Preferences::Preferences()
+{
+}
+
 void Preferences::WriteRegistry(FXRegistry& reg)
 {
   reg.writeColorEntry("SETTINGS", "textColor", colors.text);
   reg.writeColorEntry("SETTINGS", "backColor", colors.background);
   reg.writeColorEntry("SETTINGS", "errorColor", colors.error);
+  if (!chatFontspec.empty())
+    reg.writeStringEntry("SETTINGS", "chatFont", chatFontspec.text());
 }
 
 void Preferences::ReadRegistry(FXRegistry& reg)
 {
+  const FXchar *fontspec = NULL;
   colors.text = reg.readColorEntry("SETTINGS", "textColor", FXRGB(0,0,0));
   colors.background = reg.readColorEntry("SETTINGS", "backColor", FXRGB(255,255,255));
   colors.error = reg.readColorEntry("SETTINGS", "errorColor", FXRGB(255,0,0));
+  fontspec = reg.readStringEntry("SETTINGS", "chatFont", NULL);
+  if (fontspec) {
+    chatFontspec = fontspec;
+  }
 }
 

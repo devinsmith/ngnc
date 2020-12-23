@@ -15,6 +15,7 @@
  */
 
 #include "chattabitem.h"
+#include "prefs.h"
 
 static const FXListSortFunc sortfuncs[] = {
   FXList::ascendingCase,
@@ -34,9 +35,9 @@ FXIMPLEMENT(ChatTabItem, FXTabItem, ChatTabItemMap, ARRAYNUMBER(ChatTabItemMap))
 ChatTabItem::ChatTabItem(FXTabBook *tab, const FXString& tabtext,
     FXuint opts = TAB_TOP_NORMAL, TABTYPE typ = CHANNEL,
     NakenClient *sock = NULL, FXColor tclr = FXRGB(0, 0, 0),
-    FXColor tbclr = FXRGB(255, 255, 255), FXColor errclr = FXRGB(255, 0, 0)) :
+    FXColor tbclr = FXRGB(255, 255, 255)) :
   FXTabItem(tab, tabtext, NULL, opts), parent(tab), server(sock), type(typ),
-  textColor(tclr), textBackColor(tbclr), textErrorColor(errclr)
+  textColor(tclr), textBackColor(tbclr)
 {
   numberUsers = 0;
 
@@ -59,14 +60,15 @@ ChatTabItem::ChatTabItem(FXTabBook *tab, const FXString& tabtext,
   users->setScrollStyle(HSCROLLING_OFF);
   if (type != CHANNEL /*|| usersHidden*/) usersframe->hide();
   if (type != CHANNEL /*|| usersHidden*/) users->hide();
+
   commandline = new FXTextField(mainframe, 25, this, ID_COMMANDLINE,
       TEXTFIELD_ENTER_ONLY | FRAME_SUNKEN | JUSTIFY_LEFT | LAYOUT_FILL_X |
       LAYOUT_BOTTOM, 0, 0, 0, 0, 1, 1, 1, 1);
 
   text->setBackColor(textBackColor);
   text->setActiveBackColor(textBackColor);
-  commandline->setBackColor(textBackColor);
   text->setTextColor(textColor);
+  commandline->setBackColor(textBackColor);
   commandline->setTextColor(textColor);
 }
 
@@ -74,10 +76,12 @@ ChatTabItem::~ChatTabItem()
 {
 }
 
-void ChatTabItem::SetColor(FXColor tclr, FXColor tbclr)
+void ChatTabItem::SetColorFromPrefs()
 {
-  SetTextColor(tclr);
-  SetTextBackColor(tbclr);
+  const ChatColor& colors = Preferences::instance().colors;
+
+  SetTextColor(colors.text);
+  SetTextBackColor(colors.background);
 }
 
 void ChatTabItem::SetTextBackColor(FXColor clr)

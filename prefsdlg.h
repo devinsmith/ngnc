@@ -34,6 +34,7 @@ public:
   long OnAccept(FXObject*,FXSelector,void*);
   long OnCancel(FXObject*,FXSelector,void*);
   long OnColor(FXObject*,FXSelector,void*);
+  long OnChooseFont(FXObject*,FXSelector,void*);
 private:
   ConfigDialog() {}
   void WriteRegistry();
@@ -41,7 +42,7 @@ private:
   FXHiliteStyle textStyle[2];
   FXText *text;
   FXDataTarget textTarget, backTarget, errorTarget;
-  FXFont *font;
+  FXFont *chatfont;
   FXButton *fontbutton;
 };
 
