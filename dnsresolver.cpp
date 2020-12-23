@@ -25,9 +25,9 @@
 const static unsigned short DNS_UDP_PORT = 53;
 
 // Some common DNS resolvers:
-const static std::string DNS_HOST_IP_114  = "114.114.114.114";
-const static std::string DNS_HOST_IP_8  = "8.8.8.8";
-const static std::string DNS_HOST_IP_4  = "4.2.2.1";
+//const static char* DNS_HOST_IP_114  = "114.114.114.114";
+const static char* DNS_HOST_IP_8  = "8.8.8.8";
+//const static char* DNS_HOST_IP_4  = "4.2.2.1";
 
 typedef struct tagDnsQuestionSection {
   FXString host;
@@ -54,16 +54,21 @@ FXString DnsResolver::GetDNS()
 {
 #ifdef WIN32
   // XXX: Figure out how to get Windows DNS servers.
-  return "8.8.8.8";
+  return DNS_HOST_IP_8;
 #else
 
   res_init();
-  printf("Number of DNS: %d\n", _res.nscount);
 
-  struct sockaddr_in dns = _res.nsaddr_list[0];
-  char *addr = inet_ntoa(dns.sin_addr);
-  printf("Addr: %s\n", addr);
-  return addr;
+  for (int i = 0; i < _res.nscount; i++) {
+    struct sockaddr_in dns = _res.nsaddr_list[0];
+    char *addr = inet_ntoa(dns.sin_addr);
+    if (strcmp(addr, "0.0.0.0") == 0) {
+      continue;
+    }
+    return addr;
+  }
+  // No valid DNS?
+  return DNS_HOST_IP_8;
 #endif
 }
 
