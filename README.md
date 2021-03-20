@@ -12,7 +12,15 @@ OpenBSD: pkg_add -iv fox
 Void: xbps-install -Syu fox-devel
 ```
 
-Then execute `make`
+Then create a cmake directory, run cmake, then `make`
+
+```
+mkdir build
+cd build
+cmake ..
+make
+```
+
 
 # Screenshot
 
