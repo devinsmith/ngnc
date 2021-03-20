@@ -33,7 +33,7 @@ FXDEFMAP(ngnc) ngncMap[] = {
 FXIMPLEMENT(ngnc, FXMainWindow, ngncMap, ARRAYNUMBER(ngncMap))
 
 ngnc::ngnc(FXApp *app) :
-    FXMainWindow(app, "ngnc", NULL, NULL, DECOR_ALL, 0, 0, 800, 600)
+    FXMainWindow(app, "ngnc", nullptr, nullptr, DECOR_ALL, 0, 0, 800, 600)
 {
   FXIcon *ICO_BIG = new FXICOIcon(app, spy_ico);
   FXIcon *ICO_SM = new FXICOIcon(app, spy_ico);
@@ -48,24 +48,24 @@ ngnc::ngnc(FXApp *app) :
 
   // Server menu
   m_serverMenu = new FXMenuPane(this);
-  m_connect = new FXMenuCommand(m_serverMenu, "Connect...", NULL, this,
+  m_connect = new FXMenuCommand(m_serverMenu, "Connect...", nullptr, this,
       ID_CONNECT);
-  m_disconnect = new FXMenuCommand(m_serverMenu, "Disconnect", NULL,
+  m_disconnect = new FXMenuCommand(m_serverMenu, "Disconnect", nullptr,
       this, ID_DISCONNECT);
   m_disconnect->disable();
   new FXMenuSeparator(m_serverMenu);
-  new FXMenuCommand(m_serverMenu, "Quit\tCtrl-Q", NULL, this, ID_QUIT);
-  new FXMenuTitle(mb, "&Server", NULL, m_serverMenu);
+  new FXMenuCommand(m_serverMenu, "Quit\tCtrl-Q", nullptr, this, ID_QUIT);
+  new FXMenuTitle(mb, "&Server", nullptr, m_serverMenu);
 
   // Edit menu
   m_editMenu = new FXMenuPane(this);
-  new FXMenuCommand(m_editMenu, "&Preferences", NULL, this, ID_PREFERENCES);
-  new FXMenuTitle(mb, "&Edit", NULL, m_editMenu);
+  new FXMenuCommand(m_editMenu, "&Preferences", nullptr, this, ID_PREFERENCES);
+  new FXMenuTitle(mb, "&Edit", nullptr, m_editMenu);
 
   // Help menu
   m_helpMenu = new FXMenuPane(this);
-  new FXMenuCommand(m_helpMenu, "&About...", NULL, this, ID_ABOUT);
-  new FXMenuTitle(mb, "&Help", NULL, m_helpMenu);
+  new FXMenuCommand(m_helpMenu, "&About...", nullptr, this, ID_ABOUT);
+  new FXMenuTitle(mb, "&Help", nullptr, m_helpMenu);
 
   FXVerticalFrame *mf = new FXVerticalFrame(this, FRAME_RAISED | LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 
@@ -106,15 +106,17 @@ long ngnc::OnCommandAbout(FXObject*, FXSelector, void*)
   FXVerticalFrame *content = new FXVerticalFrame(&about, LAYOUT_SIDE_LEFT |
       LAYOUT_FILL_X | LAYOUT_FILL_Y);
 
-  new FXLabel(content, "ngnc 0.0.3", 0, JUSTIFY_LEFT | LAYOUT_FILL_X |
+  new FXLabel(content, "ngnc 0.0.3", nullptr, JUSTIFY_LEFT | LAYOUT_FILL_X |
       LAYOUT_FILL_Y);
-  new FXLabel(content, "Next Generation Naken Client (ngnc)", 0, JUSTIFY_LEFT | LAYOUT_FILL_X |
+  new FXLabel(content, "Next Generation Naken Client (ngnc)", nullptr, JUSTIFY_LEFT | LAYOUT_FILL_X |
       LAYOUT_FILL_Y);
-  new FXLabel(content, "Copyright (C) 2001 - 2019 Devin Smith (devin@devinsmith.net)", 0, JUSTIFY_LEFT | LAYOUT_FILL_X |
+  new FXLabel(content, "Copyright (C) 2001 - 2021 Devin Smith (devin@devinsmith.net)", nullptr, JUSTIFY_LEFT |
+  LAYOUT_FILL_X |
       LAYOUT_FILL_Y);
 
   // Ok button.
-  FXButton *button = new FXButton(content, "OK", 0, &about, FXDialogBox::ID_ACCEPT, BUTTON_INITIAL | BUTTON_DEFAULT | FRAME_RAISED | FRAME_THICK | LAYOUT_CENTER_X, 0, 0, 0, 0, 32, 32, 5, 5);
+  FXButton *button = new FXButton(content, "OK", nullptr, &about, FXDialogBox::ID_ACCEPT, BUTTON_INITIAL |
+  BUTTON_DEFAULT | FRAME_RAISED | FRAME_THICK | LAYOUT_CENTER_X, 0, 0, 0, 0, 32, 32, 5, 5);
   button->setFocus();
 
   about.execute(PLACEMENT_OWNER);

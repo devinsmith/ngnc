@@ -56,7 +56,7 @@ NakenClient::NakenClient(FXApp *app, FXObject *tgt, FXSelector sel) :
     m_hasSsl = true;
 
     // XXX: In the future do some verification.
-    SSL_CTX_set_verify(m_sslCtx, SSL_VERIFY_NONE, NULL);
+    SSL_CTX_set_verify(m_sslCtx, SSL_VERIFY_NONE, nullptr);
     SSL_CTX_set_verify_depth(m_sslCtx, 0);
     SSL_CTX_set_mode(m_sslCtx, SSL_MODE_AUTO_RETRY);
     SSL_CTX_set_session_cache_mode(m_sslCtx, SSL_SESS_CACHE_CLIENT);
@@ -125,7 +125,7 @@ void NakenClient::AsyncConnect(const std::vector<FXString>& addrs)
     }
     if (m_hasSsl && m_useSsl) {
       m_ssl = SSL_new(m_sslCtx);
-      if (m_ssl == NULL) {
+      if (m_ssl == nullptr) {
         // XXX: Don't dump to stderr.
         ERR_print_errors_fp(stderr);
         return;

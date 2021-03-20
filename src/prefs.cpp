@@ -31,11 +31,10 @@ void Preferences::WriteRegistry(FXRegistry& reg)
 
 void Preferences::ReadRegistry(FXRegistry& reg)
 {
-  const FXchar *fontspec = NULL;
   colors.text = reg.readColorEntry("SETTINGS", "textColor", FXRGB(0,0,0));
   colors.background = reg.readColorEntry("SETTINGS", "backColor", FXRGB(255,255,255));
   colors.error = reg.readColorEntry("SETTINGS", "errorColor", FXRGB(255,0,0));
-  fontspec = reg.readStringEntry("SETTINGS", "chatFont", NULL);
+  const FXchar* fontspec = reg.readStringEntry("SETTINGS", "chatFont", nullptr);
   if (fontspec) {
     chatFontspec = fontspec;
   }

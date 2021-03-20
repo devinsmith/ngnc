@@ -34,8 +34,8 @@ FXIMPLEMENT(ChatTabItem, FXTabItem, ChatTabItemMap, ARRAYNUMBER(ChatTabItemMap))
 
 ChatTabItem::ChatTabItem(FXTabBook *tab, const FXString& tabtext,
     FXuint opts = TAB_TOP_NORMAL, TABTYPE typ = CHANNEL,
-    NakenClient *sock = NULL) :
-  FXTabItem(tab, tabtext, NULL, opts), parent(tab), server(sock), type(typ), chatfont(nullptr)
+    NakenClient *sock = nullptr) :
+  FXTabItem(tab, tabtext, nullptr, opts), parent(tab), server(sock), type(typ), chatfont(nullptr)
 {
   numberUsers = 0;
 
@@ -47,7 +47,7 @@ ChatTabItem::ChatTabItem(FXTabBook *tab, const FXString& tabtext,
 
   textframe = new FXHorizontalFrame(splitter, FRAME_SUNKEN | FRAME_THICK |
       LAYOUT_FILL_X | LAYOUT_FILL_Y);
-  text = new FXText(textframe, NULL, 0, LAYOUT_FILL_X | LAYOUT_FILL_Y |
+  text = new FXText(textframe, nullptr, 0, LAYOUT_FILL_X | LAYOUT_FILL_Y |
       TEXT_READONLY | TEXT_WORDWRAP | TEXT_SHOWACTIVE | TEXT_AUTOSCROLL);
 
   usersframe = new FXVerticalFrame(splitter, FRAME_SUNKEN | FRAME_THICK |
@@ -84,8 +84,7 @@ ChatTabItem::ChatTabItem(FXTabBook *tab, const FXString& tabtext,
 
 ChatTabItem::~ChatTabItem()
 {
-  if (chatfont)
-    delete chatfont;
+  delete chatfont;
 }
 
 void ChatTabItem::UpdateFromPrefs()

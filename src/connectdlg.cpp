@@ -37,29 +37,32 @@ ConnectDialog::ConnectDialog(FXMainWindow *owner) :
   FXMatrix *matrix = new FXMatrix(contents, 2, MATRIX_BY_COLUMNS |
       LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 
-  new FXLabel(matrix, "Hostname:", NULL, JUSTIFY_LEFT | LAYOUT_FILL_COLUMN | 
+  new FXLabel(matrix, "Hostname:", nullptr, JUSTIFY_LEFT | LAYOUT_FILL_COLUMN |
       LAYOUT_FILL_ROW);
-  _hostname_field = new FXTextField(matrix, 25,NULL, 0, TEXTFIELD_ENTER_ONLY|FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  _hostname_field = new FXTextField(matrix, 25, nullptr, 0,
+                                    TEXTFIELD_ENTER_ONLY|FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   _hostname_field->setText("mikekohn.net");
 
-  new FXLabel(matrix, "", NULL, JUSTIFY_LEFT | LAYOUT_FILL_COLUMN | LAYOUT_FILL_ROW);
+  new FXLabel(matrix, "", nullptr, JUSTIFY_LEFT | LAYOUT_FILL_COLUMN | LAYOUT_FILL_ROW);
   _use_ssl = new FXCheckButton(matrix, "Use SSL?", this,
     ConnectDialog::ID_TOGGLE_SSL, CHECKBUTTON_NORMAL | JUSTIFY_RIGHT |
     LAYOUT_FILL_COLUMN | LAYOUT_FILL_ROW);
   _use_ssl->setCheck(TRUE);
 
-  new FXLabel(matrix, "Port:", NULL, JUSTIFY_LEFT|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
-  _port_spinner = new FXSpinner(matrix, 23,NULL, 0, FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXLabel(matrix, "Port:", nullptr, JUSTIFY_LEFT|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  _port_spinner = new FXSpinner(matrix, 23, nullptr, 0, FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   _port_spinner->setRange(0, 65536);
   _port_spinner->setValue(6667);
 
-  new FXLabel(matrix, "Username:", NULL, JUSTIFY_LEFT|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXLabel(matrix, "Username:", nullptr, JUSTIFY_LEFT|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   FXTextField *nick = new FXTextField(matrix, 25, NULL, 0, TEXTFIELD_ENTER_ONLY|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   nick->setText(FXSystem::currentUserName());
 
   FXHorizontalFrame *buttonframe = new FXHorizontalFrame(contents,LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  new FXButton(buttonframe, "&OK", NULL, this, ConnectDialog::ID_ACCEPT, BUTTON_INITIAL|BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X, 0,0,0,0, 32,32,5,5);
-  new FXButton(buttonframe, "Cancel", NULL, this, ConnectDialog::ID_CANCEL, BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X, 0,0,0,0, 32,32,5,5);
+  new FXButton(buttonframe, "&OK", nullptr, this, ConnectDialog::ID_ACCEPT,
+               BUTTON_INITIAL|BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X, 0,0,0,0, 32,32,5,5);
+  new FXButton(buttonframe, "Cancel", nullptr, this, ConnectDialog::ID_CANCEL,
+               BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X, 0,0,0,0, 32,32,5,5);
 }
 
 ConnectDialog::~ConnectDialog()

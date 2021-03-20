@@ -112,7 +112,7 @@ int DnsResolver::Resolve(const FXString& server)
 int DnsResolver::BuildDnsQueryPacket(const char* host, char* buf, int pos,
     int end)
 {
-  if (buf == NULL || host == NULL) {
+  if (buf == nullptr || host == nullptr) {
     return 0;
   }
   //==========header section===========
@@ -267,7 +267,7 @@ int ParseUnsignedShort(const char* buf, int pos, int end, unsigned short& value)
 }
 
 int ParseHost(const char* buf, int pos, int end, FXString& host) {
-  if (buf == NULL) {
+  if (buf == nullptr) {
     return pos;
   }
   unsigned int limit = 0xc0;
@@ -296,7 +296,7 @@ int ParseQuestionSection(const char* buf, int pos, int end, DnsQuestionSection& 
 
 int ParseResourceRecord(const char* buf, int pos, int end,
     DnsResource& dns_resource) {
-  if (buf == NULL) {
+  if (buf == nullptr) {
     return pos;
   }
   pos = ParseHost(buf, pos, end, dns_resource.host);
@@ -329,7 +329,7 @@ std::vector<DnsResource> DnsResolver::ParseDnsResponsePacket(const char* buf,
     int end) {
   std::vector<DnsResource> answers;
 
-  if (buf == NULL) {
+  if (buf == nullptr) {
     return answers;
   }
   int pos = 0;
