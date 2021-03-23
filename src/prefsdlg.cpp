@@ -169,7 +169,9 @@ long ConfigDialog::OnChooseFont(FXObject* obj, FXSelector sel, void *ud)
   FXFontDesc fontdescription;
   chatfont->getFontDesc(fontdescription);
   strncpy(fontdescription.face, chatfont->getActualName().text(),
-      sizeof(fontdescription.face));
+      sizeof(fontdescription.face) - 1);
+  fontdescription.face[sizeof(fontdescription.face) - 1] = '\0';
+
   dialog.setFontSelection(fontdescription);
   if (dialog.execute(PLACEMENT_SCREEN)) {
     FXFont *oldfont = chatfont;
