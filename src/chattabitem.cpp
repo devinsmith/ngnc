@@ -227,7 +227,9 @@ long ChatTabItem::OnCommandline(FXObject *, FXSelector, void *data)
   if (server->GetConnected()) {
     if (!commandtext.empty()) {
       commandtext += "\r\n";
-      server->SendMessage(commandtext);
+      if (server->SendMessage(commandtext) <= 0) {
+        AppendChatStyledText("Failed to send message. Are you still connected?", COLOR_ERROR);
+      }
     }
   } else {
     AppendChatStyledText("You aren't connected", COLOR_ERROR);

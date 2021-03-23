@@ -67,7 +67,7 @@ public:
   long OnConnected(FXObject*, FXSelector, void*);
   long OnDnsMsg(FXObject*, FXSelector, void*);
 
-  void SendMessage(const FXString& msg);
+  int SendMessage(const FXString& msg);
 
   void AppendTarget(FXObject *tgt);
 private:

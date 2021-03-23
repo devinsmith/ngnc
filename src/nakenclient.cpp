@@ -376,13 +376,16 @@ int NakenClient::SetBlocking(bool enable)
   return 0;
 }
 
-void NakenClient::SendMessage(const FXString& msg)
+int NakenClient::SendMessage(const FXString& msg)
 {
+  int written;
+
   if (m_useSsl) {
-    SSL_write(m_ssl, msg.text(), msg.length());
+    written = SSL_write(m_ssl, msg.text(), msg.length());
   } else {
-    write(sock, msg.text(), msg.length());
+    written = write(sock, msg.text(), msg.length());
   }
+  return written;
 }
 
 void NakenClient::AppendTarget(FXObject *tgt)
