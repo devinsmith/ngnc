@@ -47,25 +47,25 @@ ngnc::ngnc(FXApp *app) :
   menuBar = new FXMenuBar(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X);
 
   // Server menu
-  m_serverMenu = new FXMenuPane(this);
-  m_connect = new FXMenuCommand(m_serverMenu, "Connect...", nullptr, this,
+  menuPanes[0] = new FXMenuPane(this);
+  m_srv_connect = new FXMenuCommand(menuPanes[0], "Connect...", nullptr, this,
       ID_CONNECT);
-  m_disconnect = new FXMenuCommand(m_serverMenu, "Disconnect", nullptr,
+  m_srv_disconnect = new FXMenuCommand(menuPanes[0], "Disconnect", nullptr,
       this, ID_DISCONNECT);
-  m_disconnect->disable();
-  new FXMenuSeparator(m_serverMenu);
-  new FXMenuCommand(m_serverMenu, "Quit\tCtrl-Q", nullptr, this, ID_QUIT);
-  new FXMenuTitle(menuBar, "&Server", nullptr, m_serverMenu);
+  m_srv_disconnect->disable();
+  m_srv_sep = new FXMenuSeparator(menuPanes[0]);
+  m_srv_quit = new FXMenuCommand(menuPanes[0], "Quit\tCtrl-Q", nullptr, this, ID_QUIT);
+  menuTitle[0] = new FXMenuTitle(menuBar, "&Server", nullptr, menuPanes[0]);
 
   // Edit menu
-  m_editMenu = new FXMenuPane(this);
-  new FXMenuCommand(m_editMenu, "&Preferences", nullptr, this, ID_PREFERENCES);
-  new FXMenuTitle(menuBar, "&Edit", nullptr, m_editMenu);
+  menuPanes[1] = new FXMenuPane(this);
+  m_edit_pref = new FXMenuCommand(menuPanes[1], "&Preferences", nullptr, this, ID_PREFERENCES);
+  menuTitle[1] = new FXMenuTitle(menuBar, "&Edit", nullptr, menuPanes[1]);
 
   // Help menu
-  m_helpMenu = new FXMenuPane(this);
-  new FXMenuCommand(m_helpMenu, "&About...", nullptr, this, ID_ABOUT);
-  new FXMenuTitle(menuBar, "&Help", nullptr, m_helpMenu);
+  menuPanes[2] = new FXMenuPane(this);
+  m_help_about = new FXMenuCommand(menuPanes[2], "&About...", nullptr, this, ID_ABOUT);
+  menuTitle[2] = new FXMenuTitle(menuBar, "&Help", nullptr, menuPanes[1]);
 
   menuFrame = new FXVerticalFrame(this, FRAME_RAISED | LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 
@@ -83,9 +83,9 @@ ngnc::ngnc(FXApp *app) :
 
 ngnc::~ngnc()
 {
-  delete m_serverMenu;
-  delete m_editMenu;
-  delete m_helpMenu;
+  for (auto pane : menuPanes) {
+    delete pane;
+  }
 }
 
 void
@@ -135,8 +135,8 @@ long ngnc::OnCommandConnect(FXObject*, FXSelector, void*)
       server->SetSSLMode(connectDlg.UseSSL() == TRUE);
       server->Connect();
     }
-    m_connect->disable();
-    m_disconnect->enable();
+    m_srv_connect->disable();
+    m_srv_disconnect->enable();
   }
   return 1;
 }
@@ -146,8 +146,8 @@ long ngnc::OnCommandDisconnect(FXObject*, FXSelector, void*)
   if (server->GetConnected()) {
     server->Disconnect(true);
   }
-  m_connect->enable();
-  m_disconnect->disable();
+  m_srv_connect->enable();
+  m_srv_disconnect->disable();
   return 1;
 }
 
@@ -163,36 +163,114 @@ long ngnc::OnCommandPreferences(FXObject *, FXSelector, void*)
   ConfigDialog dlg(this);
   if (dlg.execute(PLACEMENT_OWNER)) {
     // User clicked save, apply preferences to chat tab items.
-    for (FXint i = 0; i < tabbook->numChildren(); i = i + 2) {
-      ((ChatTabItem *)tabbook->childAtIndex(i))->UpdateFromPrefs();
-    }
-
-    const auto& theme = Preferences::instance().theme;
-
-    // Apply themes to UI.
-    const auto& shadow = makeShadowColor(theme.base);
-    const auto& hilite = makeHiliteColor(theme.base);
-
-    this->setBackColor(theme.back);
-
-    tabbook->setShadowColor(shadow);
-    tabbook->setBackColor(theme.back);
-    tabbook->setBaseColor(theme.base);
-    tabbook->setBorderColor(theme.border);
-    tabbook->setHiliteColor(hilite);
-
-    menuFrame->setBorderColor(theme.border);
-    menuFrame->setBaseColor(theme.base);
-    menuFrame->setBackColor(theme.base);
-    menuFrame->setShadowColor(shadow);
-    menuFrame->setHiliteColor(hilite);
-
-    menuBar->setBorderColor(theme.border);
-    menuBar->setBaseColor(theme.base);
-    menuBar->setBackColor(theme.base);
-    menuBar->setShadowColor(shadow);
-    menuBar->setHiliteColor(hilite);
-
+    Retheme();
   }
   return 1;
+}
+
+void ngnc::Retheme()
+{
+  const auto& theme = Preferences::instance().theme;
+
+  // Apply themes to UI.
+  const auto& shadow = makeShadowColor(theme.base);
+  const auto& hilite = makeHiliteColor(theme.base);
+
+  // This will handle all windows that aren't currently visible.
+  auto app = getApp();
+  app->setBaseColor(theme.base);
+  app->setShadowColor(shadow);
+  app->setHiliteColor(hilite);
+  app->setBorderColor(theme.border);
+  app->setBackColor(theme.back);
+  app->setForeColor(theme.fore);
+  app->setSelbackColor(theme.selback);
+  app->setSelforeColor(theme.selfore);
+  app->setTipbackColor(theme.tipback);
+  app->setTipforeColor(theme.tipfore);
+  app->setSelMenuBackColor(theme.menuback);
+  app->setSelMenuTextColor(theme.menufore);
+  app->refresh();
+
+  // We now need to refresh the current windows
+  this->setBackColor(theme.base);
+
+  tabbook->setShadowColor(shadow);
+  tabbook->setBackColor(theme.base);
+  tabbook->setBaseColor(theme.base);
+  tabbook->setBorderColor(theme.border);
+  tabbook->setHiliteColor(hilite);
+
+  menuFrame->setBorderColor(theme.border);
+  menuFrame->setBaseColor(theme.base);
+  menuFrame->setBackColor(theme.base);
+  menuFrame->setShadowColor(shadow);
+  menuFrame->setHiliteColor(hilite);
+
+  menuBar->setBorderColor(theme.border);
+  menuBar->setBaseColor(theme.base);
+  menuBar->setBackColor(theme.base);
+  menuBar->setShadowColor(shadow);
+  menuBar->setHiliteColor(hilite);
+
+  // Theme Server menu and items.
+  for (auto & i : menuTitle) {
+    i->setShadowColor(shadow);
+    i->setBackColor(theme.base);
+    i->setSelBackColor(theme.base);
+    i->setSelTextColor(theme.fore);
+    i->setHiliteColor(hilite);
+    i->setTextColor(theme.fore);
+  }
+
+  for (auto & i : menuPanes) {
+    i->setShadowColor(shadow);
+    i->setBackColor(theme.base);
+    i->setBaseColor(theme.base);
+    i->setBorderColor(theme.border);
+    i->setHiliteColor(hilite);
+  }
+
+  m_srv_connect->setShadowColor(shadow);
+  m_srv_connect->setBackColor(theme.base);
+  m_srv_connect->setSelBackColor(theme.menuback);
+  m_srv_connect->setSelTextColor(theme.selfore);
+  m_srv_connect->setHiliteColor(hilite);
+  m_srv_connect->setTextColor(theme.fore);
+
+  m_srv_disconnect->setShadowColor(shadow);
+  m_srv_disconnect->setBackColor(theme.base);
+  m_srv_disconnect->setSelBackColor(theme.menuback);
+  m_srv_disconnect->setSelTextColor(theme.selfore);
+  m_srv_disconnect->setHiliteColor(hilite);
+  m_srv_disconnect->setTextColor(theme.fore);
+
+  m_srv_sep->setShadowColor(shadow);
+  m_srv_sep->setBackColor(theme.base);
+  m_srv_sep->setHiliteColor(hilite);
+
+  m_srv_quit->setShadowColor(shadow);
+  m_srv_quit->setBackColor(theme.base);
+  m_srv_quit->setSelBackColor(theme.menuback);
+  m_srv_quit->setSelTextColor(theme.selfore);
+  m_srv_quit->setHiliteColor(hilite);
+  m_srv_quit->setTextColor(theme.fore);
+
+  m_edit_pref->setShadowColor(shadow);
+  m_edit_pref->setBackColor(theme.base);
+  m_edit_pref->setSelBackColor(theme.menuback);
+  m_edit_pref->setSelTextColor(theme.selfore);
+  m_edit_pref->setHiliteColor(hilite);
+  m_edit_pref->setTextColor(theme.fore);
+
+  m_help_about->setShadowColor(shadow);
+  m_help_about->setBackColor(theme.base);
+  m_help_about->setSelBackColor(theme.menuback);
+  m_help_about->setSelTextColor(theme.selfore);
+  m_help_about->setHiliteColor(hilite);
+  m_help_about->setTextColor(theme.fore);
+
+  for (FXint i = 0; i < tabbook->numChildren(); i = i + 2) {
+    ((ChatTabItem *)tabbook->childAtIndex(i))->UpdateFromPrefs();
+  }
 }

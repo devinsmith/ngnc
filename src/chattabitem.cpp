@@ -131,9 +131,16 @@ void ChatTabItem::UpdateFromPrefs()
 
 void ChatTabItem::SetTextBackColor(FXColor clr)
 {
+  const auto& theme = Preferences::instance().theme;
+  const auto& shadow = makeShadowColor(theme.base);
+  const auto& hilite = makeHiliteColor(theme.base);
+
   text->setBackColor(clr);
   text->setActiveBackColor(clr);
   commandline->setBackColor(clr);
+  commandline->setBorderColor(theme.border);
+  commandline->setShadowColor(shadow);
+  commandline->setHiliteColor(hilite);
 }
 
 void ChatTabItem::SetTextColor(FXColor clr)

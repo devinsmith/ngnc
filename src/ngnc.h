@@ -47,13 +47,28 @@ private:
   ngnc() {}
   void SaveConfig();
   void SortTabs();
+  void Retheme();
 
-  FXMenuPane *m_serverMenu, *m_editMenu, *m_helpMenu;
   FXTabBook *tabbook;
-  FXMenuCommand *m_connect;
-  FXMenuCommand *m_disconnect;
+
+  FXMenuPane *menuPanes[3];
+  FXMenuTitle *menuTitle[3];
+
   FXVerticalFrame* menuFrame;
   FXMenuBar* menuBar;
+
+  // Server menu commands
+  FXMenuCommand *m_srv_connect;
+  FXMenuCommand *m_srv_disconnect;
+  FXMenuSeparator *m_srv_sep;
+  FXMenuCommand *m_srv_quit;
+
+  // Edit
+  FXMenuCommand *m_edit_pref;
+
+  // Help
+  FXMenuCommand *m_help_about;
+
 
   NakenClient *server;
 };
