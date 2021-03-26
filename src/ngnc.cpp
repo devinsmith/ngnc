@@ -42,9 +42,9 @@ ngnc::ngnc(FXApp *app) :
   setMiniIcon(ICO_SM);
 
   // Initialize preferences
-  Preferences::instance().ReadRegistry(app->reg());
+  //Preferences::instance().ReadRegistry(app->reg());
 
-  FXMenuBar *mb = new FXMenuBar(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X);
+  menuBar = new FXMenuBar(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X);
 
   // Server menu
   m_serverMenu = new FXMenuPane(this);
@@ -55,21 +55,21 @@ ngnc::ngnc(FXApp *app) :
   m_disconnect->disable();
   new FXMenuSeparator(m_serverMenu);
   new FXMenuCommand(m_serverMenu, "Quit\tCtrl-Q", nullptr, this, ID_QUIT);
-  new FXMenuTitle(mb, "&Server", nullptr, m_serverMenu);
+  new FXMenuTitle(menuBar, "&Server", nullptr, m_serverMenu);
 
   // Edit menu
   m_editMenu = new FXMenuPane(this);
   new FXMenuCommand(m_editMenu, "&Preferences", nullptr, this, ID_PREFERENCES);
-  new FXMenuTitle(mb, "&Edit", nullptr, m_editMenu);
+  new FXMenuTitle(menuBar, "&Edit", nullptr, m_editMenu);
 
   // Help menu
   m_helpMenu = new FXMenuPane(this);
   new FXMenuCommand(m_helpMenu, "&About...", nullptr, this, ID_ABOUT);
-  new FXMenuTitle(mb, "&Help", nullptr, m_helpMenu);
+  new FXMenuTitle(menuBar, "&Help", nullptr, m_helpMenu);
 
-  FXVerticalFrame *mf = new FXVerticalFrame(this, FRAME_RAISED | LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
+  menuFrame = new FXVerticalFrame(this, FRAME_RAISED | LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 
-  tabbook = new FXTabBook(mf, this, ID_TABS, PACK_UNIFORM_WIDTH|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_RIGHT);
+  tabbook = new FXTabBook(menuFrame, this, ID_TABS, PACK_UNIFORM_WIDTH|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_RIGHT);
   tabbook->setTabStyle(TABBOOK_BOTTOMTABS);
   FXuint packing = tabbook->getPackingHints();
   packing &= ~PACK_UNIFORM_WIDTH;
@@ -166,6 +166,33 @@ long ngnc::OnCommandPreferences(FXObject *, FXSelector, void*)
     for (FXint i = 0; i < tabbook->numChildren(); i = i + 2) {
       ((ChatTabItem *)tabbook->childAtIndex(i))->UpdateFromPrefs();
     }
+
+    const auto& theme = Preferences::instance().theme;
+
+    // Apply themes to UI.
+    const auto& shadow = makeShadowColor(theme.base);
+    const auto& hilite = makeHiliteColor(theme.base);
+
+    this->setBackColor(theme.back);
+
+    tabbook->setShadowColor(shadow);
+    tabbook->setBackColor(theme.back);
+    tabbook->setBaseColor(theme.base);
+    tabbook->setBorderColor(theme.border);
+    tabbook->setHiliteColor(hilite);
+
+    menuFrame->setBorderColor(theme.border);
+    menuFrame->setBaseColor(theme.base);
+    menuFrame->setBackColor(theme.base);
+    menuFrame->setShadowColor(shadow);
+    menuFrame->setHiliteColor(hilite);
+
+    menuBar->setBorderColor(theme.border);
+    menuBar->setBaseColor(theme.base);
+    menuBar->setBackColor(theme.base);
+    menuBar->setShadowColor(shadow);
+    menuBar->setHiliteColor(hilite);
+
   }
   return 1;
 }

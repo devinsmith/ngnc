@@ -95,6 +95,30 @@ void ChatTabItem::UpdateFromPrefs()
   SetTextColor(colors.text);
   SetTextBackColor(colors.background);
 
+  const auto& theme = Preferences::instance().theme;
+
+  const auto& shadow = makeShadowColor(theme.base);
+  const auto& hilite = makeHiliteColor(theme.base);
+
+  mainframe->setBorderColor(theme.border);
+  mainframe->setBaseColor(theme.base);
+  mainframe->setBackColor(theme.base);
+  mainframe->setShadowColor(shadow);
+  mainframe->setHiliteColor(hilite);
+
+  textframe->setBorderColor(theme.border);
+  textframe->setBaseColor(theme.base);
+  textframe->setBackColor(theme.base);
+  textframe->setShadowColor(shadow);
+  textframe->setHiliteColor(hilite);
+
+  this->setBorderColor(theme.border);
+  this->setBaseColor(theme.base);
+  this->setBackColor(theme.base);
+  this->setTextColor(theme.fore);
+  this->setShadowColor(shadow);
+  this->setHiliteColor(hilite);
+
   if (!fontDesc.empty()) {
     FXFont *oldfont = chatfont;
     chatfont = new FXFont(getApp(), fontDesc);

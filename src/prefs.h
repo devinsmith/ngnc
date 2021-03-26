@@ -25,6 +25,20 @@ struct ChatColor {
   FXColor error;
 };
 
+struct ColorTheme {
+  const FXchar* name;
+  FXColor       base;
+  FXColor       border;
+  FXColor       back;
+  FXColor       fore;
+  FXColor       selback;
+  FXColor       selfore;
+  FXColor       tipback;
+  FXColor       tipfore;
+  FXColor       menuback;
+  FXColor       menufore;
+};
+
 class Preferences {
 public:
   static Preferences& instance()
@@ -36,6 +50,7 @@ public:
 
   FXString chatFontspec;
   ChatColor colors;
+  ColorTheme theme;
 
   void WriteRegistry(FXRegistry& reg);
   void ReadRegistry(FXRegistry& reg);

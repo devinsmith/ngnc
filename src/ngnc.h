@@ -52,6 +52,8 @@ private:
   FXTabBook *tabbook;
   FXMenuCommand *m_connect;
   FXMenuCommand *m_disconnect;
+  FXVerticalFrame* menuFrame;
+  FXMenuBar* menuBar;
 
   NakenClient *server;
 };

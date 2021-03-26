@@ -22,6 +22,23 @@ main(int argc, char *argv[])
 {
   FXApp app("ngnc", "drsmicro");
   app.init(argc, argv);
+  Preferences::instance().ReadRegistry(app.reg());
+
+  // Set colors.
+  ColorTheme& winColors = Preferences::instance().theme;
+
+  app.setBaseColor(winColors.base);
+  app.setShadowColor(makeShadowColor(winColors.base));
+  app.setHiliteColor(makeHiliteColor(winColors.base));
+  app.setBorderColor(winColors.border);
+  app.setBackColor(winColors.back);
+  app.setForeColor(winColors.fore);
+  app.setSelbackColor(winColors.selback);
+  app.setSelforeColor(winColors.selfore);
+  app.setTipbackColor(winColors.tipback);
+  app.setTipforeColor(winColors.tipfore);
+  app.setSelMenuBackColor(winColors.menuback);
+  app.setSelMenuTextColor(winColors.menufore);
 
   new ngnc(&app); // Deleted by FXTopWindow::Close
   app.create();

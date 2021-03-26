@@ -27,23 +27,72 @@ public:
   enum {
     ID_ACCEPT = FXTopWindow::ID_LAST,
     ID_CANCEL,
+    ID_COLORS,
     ID_CHATCOLORS,
+    ID_COLOR_THEME,
     ID_CHOOSE_FONT
   };
+
+  virtual void create();
 
   long OnAccept(FXObject*,FXSelector,void*);
   long OnCancel(FXObject*,FXSelector,void*);
   long OnColor(FXObject*,FXSelector,void*);
   long OnChooseFont(FXObject*,FXSelector,void*);
+  long OnColorTheme(FXObject*,FXSelector,void*);
+  long OnColorChanged(FXObject*,FXSelector,void*);
 private:
-  ConfigDialog() {}
-  void WriteRegistry();
+  ConfigDialog() = default;
+  void setup();
+  void setupColors();
+  void initColors();
 
-  FXHiliteStyle textStyle[2];
-  FXText *text;
+  ColorTheme        theme_user;     // Theme User may have set, which is different from the other themes
+  FXColor           hilite;
+  FXColor           shadow;
+
+  FXDataTarget target_base;
+  FXDataTarget target_back;
+  FXDataTarget target_border;
+  FXDataTarget target_fore;
+  FXDataTarget target_hilite;
+  FXDataTarget target_shadow;
+  FXDataTarget target_selfore;
+  FXDataTarget target_selback;
+  FXDataTarget target_tipfore;
+  FXDataTarget target_tipback;
+  FXDataTarget target_menufore;
+  FXDataTarget target_menuback;
+
+  FXHiliteStyle textStyle[2]{};
+  FXText *text{};
   FXDataTarget textTarget, backTarget, errorTarget;
-  FXFont *chatfont;
-  FXButton *fontbutton;
+  FXFont *chatfont{};
+  FXButton *fontbutton{};
+
+  FXTabItem* tabitem;
+  FXVerticalFrame* tabframe;
+  FXHorizontalFrame* tabsubframe;
+  FXVerticalFrame* menuframe;
+  FXLabel *menulabels[6];
+  FXGroupBox* grpbox1;
+  FXGroupBox* grpbox2;
+  FXSeparator* sep1;
+  FXSeparator* sep2;
+  FXSeparator* sep3;
+  FXHorizontalFrame *labeltextframe1;
+  FXHorizontalFrame *labeltextframe2;
+  FXLabel           *label1;
+  FXLabel           *label2;
+  FXLabel           *label3;
+  FXLabel           *label4;
+  FXLabel *label5;
+  FXHorizontalFrame *textframe1;
+  FXHorizontalFrame *textframe2;
+  FXTextField* textfield1;
+  FXToolTip *tooltip;
+
+  FXListBox *list{};
 };
 
 #endif /* NGNC_PREFSDLG_H */
