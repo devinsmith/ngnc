@@ -4,13 +4,13 @@ if (UNIX)
     find_program(FOX_CONFIG fox-config)
     # if was found, execute it and obtain the variables FOX_CXX_FLAGS and FOX_LIBRARY, needed for compilations
     IF(FOX_CONFIG)
-        exec_program(
-            ${FOX_CONFIG}
-            ARGS --cflags
+        execute_process(
+            COMMAND ${FOX_CONFIG} --cflags
+            OUTPUT_STRIP_TRAILING_WHITESPACE
             OUTPUT_VARIABLE FOX_CXX_FLAGS)
-        exec_program(
-            ${FOX_CONFIG}
-            ARGS --libs
+        execute_process(
+            COMMAND ${FOX_CONFIG} --libs
+            OUTPUT_STRIP_TRAILING_WHITESPACE
             OUTPUT_VARIABLE FOX_LIBRARY)
     endif(FOX_CONFIG)
 endif(UNIX)
