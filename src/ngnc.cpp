@@ -65,7 +65,7 @@ ngnc::ngnc(FXApp *app) :
   // Help menu
   menuPanes[2] = new FXMenuPane(this);
   m_help_about = new FXMenuCommand(menuPanes[2], "&About...", nullptr, this, ID_ABOUT);
-  menuTitle[2] = new FXMenuTitle(menuBar, "&Help", nullptr, menuPanes[1]);
+  menuTitle[2] = new FXMenuTitle(menuBar, "&Help", nullptr, menuPanes[2]);
 
   menuFrame = new FXVerticalFrame(this, FRAME_RAISED | LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 
